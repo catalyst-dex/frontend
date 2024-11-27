@@ -1,7 +1,6 @@
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
@@ -51,7 +50,9 @@ const UserInfo = () => {
 						<Copy className='w-5 mx-auto' />
 						<p className='test-sm'>Copy address</p>
 					</button>
-					<button className='rounded-[.9rem]'>
+					<button
+						className='rounded-[.9rem]'
+						onClick={() => disconnect()}>
 						<LogOut className='w-5 mx-auto' />
 						<p className='text-sm'>Disconnect</p>
 					</button>

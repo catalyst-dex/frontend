@@ -1,12 +1,10 @@
 "use client";
 
-import { ArrowDown, ChevronDown, SlidersHorizontal } from "lucide-react";
-import Image from "next/image";
-import { Fragment, useEffect } from "react";
+import { ArrowDown, SlidersHorizontal } from "lucide-react";
+
 import TokenListDialog from "./TokenListDialog";
 import useSwapToken from "@/hooks/useSwapToken";
-import { getTokenAccountsByOwner, showToast } from "@/lib/utils";
-import { useWallet } from "@solana/wallet-adapter-react";
+
 // import {
 // 	Select,
 // 	SelectContent,
@@ -15,7 +13,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 // 	SelectValue,
 // } from "@/components/ui/select";
 
-const coins = ["usdt", "usdc", "btc", "eth", "bnb", "sol"];
+// const coins = ["usdt", "usdc", "btc", "eth", "bnb", "sol"];
 
 type CoinInputProps = {
 	coin: string;
@@ -60,26 +58,7 @@ export const CoinInput = (props: CoinInputProps) => {
 function SwapCard() {
 	const { setTokenToPay, setTokenToReceive, tokenToPay, tokenToRecieve } =
 		useSwapToken();
-	const { disconnect, publicKey } = useWallet();
 
-	useEffect(() => {
-		async function getAccountTokens() {
-			try {
-				showToast.loading("Getting token");
-				const tokens = await getTokenAccountsByOwner(
-					publicKey?.toBase58()!
-				);
-				showToast.success("Token retireved");
-				console.log(tokens);
-			} catch (error) {
-				console.log(error);
-				showToast.error("Error occureed");
-			}
-		}
-		if (publicKey) {
-			getAccountTokens();
-		}
-	}, [publicKey]);
 	return (
 		<article className='w-[40%] border border-[#5c5c5c7d] rounded-[1rem] mx-auto mt-14 p-6 bg-[#0f0f0ff0] min-w-[32rem]'>
 			<div className='flex items-center justify-between text-sm text-gray-400 mb-7'>

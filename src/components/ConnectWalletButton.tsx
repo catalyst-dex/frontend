@@ -1,13 +1,13 @@
 "use client";
 
-import { shortenAddress } from "@/lib/utils";
+// import { shortenAddress } from "@/lib/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 
 import UserInfo from "./UserInfo";
 
 export const ConnectWalletButton = () => {
-	const { connected, disconnect, connecting, publicKey } = useWallet();
+	const { connected, disconnect, connecting } = useWallet();
 	const { setVisible } = useWalletModal();
 
 	const handleClick = () => {

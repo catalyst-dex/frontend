@@ -1,6 +1,5 @@
 import { Copy, ExternalLink, Search } from "lucide-react";
 import Image from "next/image";
-import { Fragment } from "react";
 
 const TopTokenTable = () => {
 	const cryptoData = [

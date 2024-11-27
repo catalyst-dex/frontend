@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import toast from "react-hot-toast";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { Keypair } from "@solana/web3.js";
-import { AccountLayout, TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));

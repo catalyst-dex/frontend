@@ -1,4 +1,3 @@
-import React from "react";
 import {
 	ExternalLink,
 	ArrowUp,
@@ -7,6 +6,8 @@ import {
 	ArrowLeftRight,
 	Plus,
 } from "lucide-react";
+
+import Image from "next/image";
 
 const TopPoolTable = () => {
 	const cryptoData = [
@@ -126,9 +127,11 @@ const TopPoolTable = () => {
 							<td className='py-4 px-2'>{crypto.id}</td>
 							<td className='py-4 px-4'>
 								<div className='flex items-center gap-2'>
-									<img
+									<Image
 										src={crypto.icon}
 										alt={crypto.symbol}
+										width={20}
+										height={20}
 										className='w-8 h-8 rounded-full'
 									/>
 									<div>

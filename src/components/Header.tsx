@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Settings, History } from "lucide-react";
+import { History } from "lucide-react";
 import Link from "next/link";
 import { ConnectWalletButton } from "./ConnectWalletButton";
 

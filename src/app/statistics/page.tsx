@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp, Search } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, Area, AreaChart } from "recharts";
 
 import {
@@ -40,7 +40,7 @@ const chartConfig = {
 	},
 } satisfies ChartConfig;
 
-export function VolumeChart() {
+function VolumeChart() {
 	return (
 		<Card className='bg-[#060606] border-[#696969c4] text-gray-400'>
 			<CardHeader>
@@ -115,7 +115,7 @@ const liquidityChartConfig = {
 	},
 } satisfies ChartConfig;
 
-export function LiquidityChart() {
+function LiquidityChart() {
 	return (
 		<Card className='bg-[#060606] border-[#696969c4] text-gray-400'>
 			<CardHeader>

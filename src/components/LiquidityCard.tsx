@@ -8,7 +8,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
-import { ArrowLeftRight, MoveHorizontal } from "lucide-react";
+import { MoveHorizontal } from "lucide-react";
 import { CoinInput } from "./SwapCard";
 import { useState } from "react";
 
@@ -45,8 +45,8 @@ export function CoinSelect() {
 }
 
 function LiquidityCard() {
-	const [firstToken, setFirstToken] = useState<string>();
-	const [secondToken, setSecondToken] = useState<string>();
+	const [firstToken, setFirstToken] = useState<string>(coins[0]);
+	const [secondToken, setSecondToken] = useState<string>(coins[0]);
 
 	return (
 		<article className='w-[45%] mx-auto mt-[5rem] border border-[#5c5c5c7d] rounded-[1rem] bg-[#0f0f0ff0] p-8'>
@@ -63,12 +63,12 @@ function LiquidityCard() {
 
 			<CoinInput
 				className='mt-4'
-				coin={coins[0]}
+				coin={firstToken}
 				setSelectedToken={setFirstToken}
 			/>
 			<CoinInput
 				className='mt-4'
-				coin={coins[0]}
+				coin={secondToken}
 				setSelectedToken={setSecondToken}
 			/>
 			<button className='bg-app-primary w-full rounded-[1rem] py-4 mt-6 font-grotesk text-sm'>
