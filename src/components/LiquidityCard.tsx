@@ -11,6 +11,7 @@ import Image from "next/image";
 import { MoveHorizontal } from "lucide-react";
 import { CoinInput } from "./SwapCard";
 import { useState } from "react";
+import { CryptoData, cryptoData } from "@/hooks/useSwapToken";
 
 const coins = ["usdt", "usdc", "btc", "eth", "bnb", "sol"];
 
@@ -45,11 +46,11 @@ export function CoinSelect() {
 }
 
 function LiquidityCard() {
-	const [firstToken, setFirstToken] = useState<string>(coins[0]);
-	const [secondToken, setSecondToken] = useState<string>(coins[0]);
+	const [firstToken, setFirstToken] = useState<CryptoData>(cryptoData[0]);
+	const [secondToken, setSecondToken] = useState<CryptoData>(cryptoData[2]);
 
 	return (
-		<article className='w-[45%] mx-auto mt-[5rem] border border-[#5c5c5c7d] rounded-[1rem] bg-[#0f0f0ff0] p-8'>
+		<article className='w-[45%] mx-auto mt-[5rem] border border-[#b23b4b5c] min-w-[32rem] rounded-[1rem] bg-[#0f0f0ff0] p-8'>
 			<h2 className='mb-5 font-manrope text-zinc-400 font-semibold text-[1.1rem]'>
 				Deposit Amount
 			</h2>
@@ -65,11 +66,13 @@ function LiquidityCard() {
 				className='mt-4'
 				coin={firstToken}
 				setSelectedToken={setFirstToken}
+				availableAmount={0}
 			/>
 			<CoinInput
 				className='mt-4'
 				coin={secondToken}
 				setSelectedToken={setSecondToken}
+				availableAmount={0}
 			/>
 			<button className='bg-app-primary w-full rounded-[1rem] py-4 mt-6 font-grotesk text-sm'>
 				Add position

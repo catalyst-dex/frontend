@@ -36,7 +36,7 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiase`}>
 				<SolanaWalletProvider>
-					<Toaster />
+					<Toaster position='bottom-right' />
 					<div className='w-[80%] mx-auto text-white'>
 						<div className='grid--pattern ' />
 						<Header />

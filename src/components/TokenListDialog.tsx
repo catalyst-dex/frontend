@@ -11,89 +11,17 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ChevronDown, Search, X } from "lucide-react";
 import { useRef } from "react";
 import { showToast } from "@/lib/utils";
+import { CryptoData } from "@/hooks/useSwapToken";
+import { cryptoData } from "@/hooks/useSwapToken";
 
-const cryptoData = [
-	{
-		id: 1,
-		name: "Wrapped SOL",
-		symbol: "SOL",
-		icon: "/coins/sol.svg",
-		price: 250.51,
-		volume24h: "831.19K",
-		tvl: "21.93K",
-	},
-	{
-		id: 2,
-		name: "USD Coin",
-		symbol: "USDC",
-		icon: "/coins/usdc.svg",
-		price: 0.999,
-		volume24h: "739.76K",
-		tvl: "183.79K",
-	},
-	{
-		id: 3,
-		name: "Bnb",
-		symbol: "bnb",
-		icon: "/coins/bnb.svg",
-		price: 4.0784,
-		volume24h: "193.41K",
-		tvl: "33.36K",
-	},
-	{
-		id: 4,
-		name: "USDT",
-		symbol: "USDT",
-		icon: "/coins/usdt.svg",
-		price: 1.00142,
-		volume24h: "70.20K",
-		tvl: "126.847",
-	},
-	{
-		id: 2,
-		name: "USD Coin",
-		symbol: "USDC",
-		icon: "/coins/usdc.svg",
-		price: 0.999,
-		volume24h: "739.76K",
-		tvl: "183.79K",
-	},
-	{
-		id: 3,
-		name: "Bnb",
-		symbol: "bnb",
-		icon: "/coins/bnb.svg",
-		price: 4.0784,
-		volume24h: "193.41K",
-		tvl: "33.36K",
-	},
-	{
-		id: 4,
-		name: "USDT",
-		symbol: "USDT",
-		icon: "/coins/usdt.svg",
-		price: 1.00142,
-		volume24h: "70.20K",
-		tvl: "126.847",
-	},
-	{
-		id: 4,
-		name: "USDT",
-		symbol: "USDT",
-		icon: "/coins/usdt.svg",
-		price: 1.00142,
-		volume24h: "70.20K",
-		tvl: "126.847",
-	},
-];
 type TokenListDialogProps = {
-	coin: string;
+	coin: CryptoData;
 	diabled?: boolean;
-	setSelectedToken: (value: string) => void;
+	setSelectedToken: (value: CryptoData) => void;
 };
 function TokenListDialog(props: TokenListDialogProps) {
 	const elementRef = useRef<HTMLButtonElement>(null);
-	const handleTokenSelect = (token: string) => {
+	const handleTokenSelect = (token: CryptoData) => {
 		props.setSelectedToken(token);
 		elementRef.current?.click();
 		console.log("did something");
@@ -104,12 +32,15 @@ function TokenListDialog(props: TokenListDialogProps) {
 			<DialogTrigger disabled={props.diabled}>
 				<div className=' px-1 flex items-center gap-1 border border-[#5c5c5c7d] rounded-[2rem] bg-black pr-2 py-1'>
 					<Image
-						src={`/coins/${props.coin}.svg`}
-						alt={props.coin}
+						src={props.coin.icon}
+						alt={props.coin.name}
 						width={37}
 						height={37}
+						className='rounded-full'
 					/>
-					<p className='uppercase text-gray-300'>{props.coin}</p>
+					<p className='uppercase text-gray-300'>
+						{props.coin.symbol}
+					</p>
 					<ChevronDown
 						className='w-[3.6rem] '
 						strokeWidth={1}
@@ -144,7 +75,7 @@ function TokenListDialog(props: TokenListDialogProps) {
 						<div
 							key={index}
 							className='flex items-center gap-3 hover:bg-zinc-800 cursor-pointer p-3 rounded-lg'
-							onClick={() => handleTokenSelect(token.symbol)}>
+							onClick={() => handleTokenSelect(token)}>
 							<Image
 								src={token.icon}
 								alt='ALI'

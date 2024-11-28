@@ -71,7 +71,7 @@ export const getSOLBalance = async (
 ) => {
 	try {
 		const balance = await connection.getBalance(publicKey);
-		console.log(balance / LAMPORTS_PER_SOL);
+		return balance / LAMPORTS_PER_SOL;
 	} catch (err) {
 		console.error("Error fetching SOL balance:", err);
 	}

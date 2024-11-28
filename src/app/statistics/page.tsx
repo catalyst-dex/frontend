@@ -42,7 +42,7 @@ const chartConfig = {
 
 function VolumeChart() {
 	return (
-		<Card className='bg-[#060606] border-[#696969c4] text-gray-400'>
+		<Card className='bg-[#060606] border border-[#b23b4b5c] text-gray-400'>
 			<CardHeader>
 				<CardTitle>Bar Chart - Multiple</CardTitle>
 				<CardDescription>January - June 2024</CardDescription>
@@ -117,7 +117,7 @@ const liquidityChartConfig = {
 
 function LiquidityChart() {
 	return (
-		<Card className='bg-[#060606] border-[#696969c4] text-gray-400'>
+		<Card className='bg-[#060606] border border-[#b23b4b5c] text-gray-400'>
 			<CardHeader>
 				<CardTitle>Area Chart - Gradient</CardTitle>
 				<CardDescription>

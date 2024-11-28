@@ -107,11 +107,11 @@ const umi = createUmi(SOON_RPC_ENDPOINT).use(mplTokenMetadata());
 
 // Create keypair and signer
 const decoder = bs58.decode(process.env.NEXT_PUBLIC_MY_SECREAT!);
-console.log(decoder, "decoder");
+
 const keypair = umi.eddsa.createKeypairFromSecretKey(decoder);
 const payer = Keypair.fromSecretKey(decoder);
 // const payer = Keypair.fromSecretKey(payerSecretKey);
-console.log("Payer Public Key:", payer.publicKey);
+// console.log("Payer Public Key:", payer.publicKey);
 
 const myKeypairSigner = createSignerFromKeypair(umi, keypair);
 umi.use(signerIdentity(myKeypairSigner));
@@ -125,11 +125,12 @@ export async function createtokenWithMetaplex(
 	imageURL: string,
 	decimals: number,
 	symbol: string,
+	supply: number,
 	publicKey: PublicKey
 ) {
+	console.log(name, imageURL, decimals, symbol, supply, publicKey);
 	try {
 		showToast.loading("Minting token...");
-		console.log("mypublicKey", publicKey);
 		const connection = new Connection(
 			"https://rpc.devnet.soo.network/rpc",
 			"confirmed"
@@ -137,7 +138,6 @@ export async function createtokenWithMetaplex(
 		const balance = await connection.getBalance(publicKey);
 		const solBalance = balance / LAMPORTS_PER_SOL;
 		console.log(solBalance.toString());
-		showToast.message(solBalance.toString());
 		// // Switch Umi instance to SOON Devnet by adding necessary programs
 		await umiSwitchToSoonDevnet(umi);
 
@@ -158,7 +158,7 @@ export async function createtokenWithMetaplex(
 			name: name,
 			uri: imageURL,
 			sellerFeeBasisPoints: percentAmount(5.5),
-			decimals: some(7),
+			decimals: some(Number(decimals)),
 			symbol,
 		}).sendAndConfirm(umi);
 
@@ -186,7 +186,7 @@ export async function createtokenWithMetaplex(
 			newTokenMintPublicKey,
 			tokenAccount.address,
 			payer,
-			10 * 10
+			Number(supply)
 		);
 	} catch (error) {
 		console.error("Transaction failed:", error);

@@ -12,6 +12,9 @@ const CreateTokenUI = () => {
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { value, name } = e.currentTarget;
+		console.log(tokenDetails);
+		console.log(Number(tokenDetails?.decimals));
+		console.log(Number(tokenDetails?.supply));
 		setTokenDetails({ [name]: value });
 	};
 
@@ -21,7 +24,8 @@ const CreateTokenUI = () => {
 				!tokenDetails?.name ||
 				!tokenDetails?.decimals ||
 				!tokenDetails?.image ||
-				!tokenDetails?.symbol
+				!tokenDetails?.symbol ||
+				!tokenDetails.supply
 			)
 				return showToast.error("Fill all required parts");
 			showToast.loading("Creating token");
@@ -49,6 +53,7 @@ const CreateTokenUI = () => {
 				imageUrl,
 				tokenDetails?.decimals,
 				tokenDetails.symbol,
+				tokenDetails.supply,
 				publicKey!
 			);
 			showToast.success("Token created successfully");
@@ -129,9 +134,18 @@ const CreateTokenUI = () => {
 				</div>
 			</div>
 
-			<div className='text-gray-400 text-sm mb-6'>
-				Token cost: ~0.0002 ETH
-			</div>
+			{tokenDetails?.supply && (
+				<div className='text-gray-400 text-sm mb-6'>
+					Amount to mint :{" "}
+					{Number(tokenDetails?.supply) /
+						(1 * Math.pow(10, Number(tokenDetails?.decimals)))}
+				</div>
+			)}
+			{!tokenDetails?.supply && (
+				<div className='text-gray-400 text-sm mb-6'>
+					Input token supply{" "}
+				</div>
+			)}
 			{connected ? (
 				<button
 					type='button'

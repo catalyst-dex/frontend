@@ -3,12 +3,12 @@
 import { ArrowDown, SlidersHorizontal } from "lucide-react";
 
 import TokenListDialog from "./TokenListDialog";
-import useSwapToken from "@/hooks/useSwapToken";
-import { useEffect } from "react";
+import useSwapToken, { CryptoData } from "@/hooks/useSwapToken";
+import { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 
-import { getSOLBalance, getTokenBalances } from "@/lib/utils";
+import { getSOLBalance, getTokenBalances, showToast } from "@/lib/utils";
 // import {
 // 	Select,
 // 	SelectContent,
@@ -20,12 +20,13 @@ import { getSOLBalance, getTokenBalances } from "@/lib/utils";
 // const coins = ["usdt", "usdc", "btc", "eth", "bnb", "sol"];
 
 type CoinInputProps = {
-	coin: string;
+	coin: CryptoData;
 	className?: string;
 	title?: string;
 	disabled?: boolean;
+	availableAmount: number;
 	setSelectedToken: (
-		value: string
+		value: CryptoData
 	) => void | React.Dispatch<React.SetStateAction<string>>;
 };
 
@@ -48,7 +49,7 @@ export const CoinInput = (props: CoinInputProps) => {
 				<div className='flex items-center justify-between text-sm text-gray-400'>
 					<p>$3.22</p>
 					<div>
-						Balance: 100{" "}
+						Balance:{" "}
 						<button className='text-app-primary text-semibold'>
 							Max
 						</button>
@@ -63,11 +64,18 @@ function SwapCard() {
 	const { setTokenToPay, setTokenToReceive, tokenToPay, tokenToRecieve } =
 		useSwapToken();
 
+	const [solBalance, setSolBalance] = useState(0);
+
 	const { publicKey } = useWallet();
 
 	const switchTokens = () => {
 		setTokenToPay(tokenToRecieve);
 		setTokenToReceive(tokenToPay);
+	};
+
+	const swapToken = () => {
+		showToast.loading("Initiating swap");
+		setTimeout(() => showToast.error("An error occurred"), 4000);
 	};
 
 	useEffect(() => {
@@ -78,14 +86,15 @@ function SwapCard() {
 				"confirmed"
 			);
 			const newPublicKey = new PublicKey(publicKey?.toString());
-			await getSOLBalance(connection, newPublicKey);
+			const solBalance = await getSOLBalance(connection, newPublicKey);
+			setSolBalance(solBalance || 0);
 			await getTokenBalances(connection, newPublicKey);
 		};
 		fetchBalances();
 	}, [publicKey]);
 
 	return (
-		<article className='w-[40%] border border-[#b23b4b5c] rounded-[1rem] mx-auto mt-14 p-6 bg-[#0f0f0ff0] min-w-[32rem]'>
+		<article className='w-[40%] border border-[#b23b4b5c] min-w-[32rem] rounded-[1rem] mx-auto mt-14 p-6 bg-[#0f0f0ff0] '>
 			<div className='flex items-center justify-between text-sm text-gray-400 mb-7'>
 				<p className='font-glyphic font-semibold text-[#cdcdcd] text-lg'>
 					Exchange
@@ -101,6 +110,7 @@ function SwapCard() {
 						coin={tokenToPay}
 						title='You pay'
 						setSelectedToken={setTokenToPay}
+						availableAmount={solBalance}
 					/>
 					<div
 						onClick={switchTokens}
@@ -112,9 +122,12 @@ function SwapCard() {
 					coin={tokenToRecieve}
 					title='You receive'
 					setSelectedToken={setTokenToReceive}
+					availableAmount={solBalance}
 				/>
 			</div>
-			<button className='bg-app-primary w-full rounded-[1rem] py-4 mt-6'>
+			<button
+				onClick={swapToken}
+				className='active:brightness-90 bg-app-primary w-full rounded-[1rem] py-4 mt-6'>
 				Swap
 			</button>
 		</article>
