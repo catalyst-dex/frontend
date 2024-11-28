@@ -132,7 +132,14 @@ const TopPoolTable = () => {
 										alt={crypto.symbol}
 										width={20}
 										height={20}
-										className='w-8 h-8 rounded-full'
+										className='w-8 h-8 mr-2'
+									/>
+									<Image
+										src={crypto.icon}
+										alt={crypto.symbol}
+										width={20}
+										height={20}
+										className='w-8 h-8  z-10 relative right-7'
 									/>
 									<div>
 										<div className='flex items-center gap-2'>

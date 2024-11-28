@@ -10,6 +10,33 @@
 	top: 0;
 	left: 0;
 	z-index: -2;
+
+	&:after {
+		position: fixed;
+		content: "";
+		top: 0;
+		left: 0;
+		height: 100vh;
+		width: 100%;
+
+		background: radial-gradient(
+			circle,
+			transparent 0%,
+			rgba(0, 0, 0, 0.685) 100%
+		);
+		/* background-color: red; */
+	}
+	&:before {
+		position: fixed;
+		content: "";
+		top: 0%;
+		left: 50%;
+		transform: translateX(-50%);
+		height: 90vh;
+		width: 17%;
+		background-color: rgba(178, 49, 66, 0.819);
+		filter: blur(120px);
+	}
 }
 
 /* Remove arrows for Chrome, Safari, Edge, Opera */

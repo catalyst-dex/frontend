@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import toast from "react-hot-toast";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { Keypair } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
@@ -38,22 +38,41 @@ export const generateRandomPublicKey = () => {
 	console.log("Public key:", publicKey);
 };
 
-export async function getTokenAccountsByOwner(walletAddress: string) {
-	const connection = new Connection("https://api.mainnet-beta.solana.com");
-	const ownerPublicKey = new PublicKey(walletAddress);
+export const getTokenBalances = async (
+	connection: Connection,
+	publicKey: PublicKey
+) => {
+	try {
+		const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+			publicKey,
+			{
+				programId: TOKEN_PROGRAM_ID,
+			}
+		);
 
-	const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
-		ownerPublicKey,
-		{
-			programId: TOKEN_PROGRAM_ID,
-		}
-	);
+		const tokenBalances = tokenAccounts.value
+			.map((account) => ({
+				tokenAddress: account.account.data.parsed.info.mint,
+				balance:
+					account.account.data.parsed.info.tokenAmount.uiAmount || 0,
+				symbol: account.account.data.parsed.info.tokenAmount.decimals,
+			}))
+			.filter((token) => token.balance > 0);
+		console.log(tokenAccounts);
+		console.log(tokenBalances);
+	} catch (err) {
+		console.error("Error fetching token balances:", err);
+	}
+};
 
-	return tokenAccounts.value.map((account) => {
-		return {
-			address: account.pubkey.toBase58(),
-			mint: account.account.data.parsed.info.mint,
-			amount: account.account.data.parsed.info.tokenAmount.amount,
-		};
-	});
-}
+export const getSOLBalance = async (
+	connection: Connection,
+	publicKey: PublicKey
+) => {
+	try {
+		const balance = await connection.getBalance(publicKey);
+		console.log(balance / LAMPORTS_PER_SOL);
+	} catch (err) {
+		console.error("Error fetching SOL balance:", err);
+	}
+};

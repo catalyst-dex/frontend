@@ -10,7 +10,7 @@ import {
 	SolflareWalletAdapter,
 	PhantomWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
-import { CATALYST_RPC_ENDPOINT } from "@/lib/constants";
+import { SOON_RPC_ENDPOINT } from "@/lib/constants";
 
 import "@solana/wallet-adapter-react-ui/styles.css";
 
@@ -29,7 +29,7 @@ export default function SolanaWalletProvider({
 	);
 
 	return (
-		<ConnectionProvider endpoint={CATALYST_RPC_ENDPOINT}>
+		<ConnectionProvider endpoint={SOON_RPC_ENDPOINT}>
 			<WalletProvider
 				wallets={solanaWallets}
 				autoConnect={true}>

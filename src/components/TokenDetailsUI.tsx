@@ -1,6 +1,11 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import useNewToken from "@/hooks/useNewToken";
+import html2canvas from "html2canvas";
+import Image from "next/image";
+import { Plus, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { showToast } from "@/lib/utils";
 
 type TokenIconProps = {
 	color: string;
@@ -25,33 +30,169 @@ const TokenIcon = (props: TokenIconProps) => {
 };
 
 const TokenDetailsUI = () => {
+	const { setTokenDetails, tokenDetails } = useNewToken();
+	const [selectedImage, setSelectedImage] = useState("second");
+	const [upLoadedImage, setUploadedImage] = useState<File | null>(null);
+	const [hidden, setHidden] = useState(false);
+
+	useEffect(() => {
+		async function getCurrentImageBlob() {
+			const imageElement = document.getElementById("second")!;
+
+			const canvas = await html2canvas(imageElement, {
+				useCORS: true,
+				scale: 2,
+				logging: false,
+			});
+			// Convert canvas to blob
+			const blob = await new Promise((resolve) => {
+				canvas.toBlob(resolve, "image/png", 1.0);
+			});
+			if (!blob) return showToast.error("Internal server error");
+
+			return setTokenDetails({ image: blob as Blob });
+		}
+		getCurrentImageBlob();
+	}, []);
+
 	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files![0];
 		if (file) {
 			// Handle the uploaded image file (e.g., preview, upload to a server, etc.)
 			console.log("Uploaded file:", file);
+			setUploadedImage(file);
+			setHidden(true);
 		}
+	};
+
+	const handleChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		const { value, name } = e.currentTarget;
+		setTokenDetails({ [name]: value });
+		console.log(tokenDetails);
+	};
+
+	const removeUploadedImage = (e: React.MouseEvent<HTMLSpanElement>) => {
+		e.stopPropagation();
+		setUploadedImage(null);
+		if (selectedImage == "sixth") {
+			setSelectedImage("first");
+		}
+		setHidden(false);
+	};
+
+	const handleImageSelect = async (e: React.MouseEvent<HTMLDivElement>) => {
+		setSelectedImage(e.currentTarget.id);
+		const imageElement = document.getElementById(e.currentTarget.id)!;
+		if (!imageElement) return;
+
+		if (e.currentTarget.id !== "sixth") {
+			const canvas = await html2canvas(imageElement, {
+				useCORS: true,
+				scale: 2,
+				logging: false,
+			});
+			// Convert canvas to blob
+			const blob = await new Promise((resolve) => {
+				canvas.toBlob(resolve, "image/png", 1.0);
+			});
+			if (!blob) return showToast.error("Internal server error");
+
+			return setTokenDetails({ image: blob as Blob });
+		}
+		if (!upLoadedImage) return showToast.error("Select an Image");
+
+		setTokenDetails({ image: upLoadedImage });
 	};
 
 	return (
 		<div className='bg-[#121212] p-8 rounded-[.9rem] w-full mx-auto'>
-			<div className='grid grid-cols-2 gap-8 w-[80%]'>
-				<div>
+			<div className='grid grid-cols-2 gap-6 w-[80%]'>
+				<div
+					id='first'
+					onClick={handleImageSelect}
+					className={`${
+						selectedImage == "first"
+							? "bg-zinc-800   rounded-xl"
+							: ""
+					} p-2 hover:bg-zinc-800 w-fit rounded-xl active:bg-zinc-700 cursor-pointer
+					`}>
 					<TokenIcon color='blue' />
 				</div>
-				<div>
+				<div
+					id='second'
+					onClick={handleImageSelect}
+					className={`${
+						selectedImage == "second"
+							? "bg-zinc-800   rounded-xl"
+							: ""
+					} p-2 hover:bg-zinc-800 w-fit rounded-xl active:bg-zinc-700 cursor-pointer
+					`}>
 					<TokenIcon color='yellow' />
 				</div>
-				<div>
+				<div
+					id='third'
+					onClick={handleImageSelect}
+					className={`${
+						selectedImage == "third"
+							? "bg-zinc-800   rounded-xl"
+							: ""
+					} p-2 hover:bg-zinc-800 w-fit rounded-xl active:bg-zinc-700 cursor-pointer
+					`}>
 					<TokenIcon color='#b23b4b' />
 				</div>
-				<div>
+				<div
+					id='fourth'
+					onClick={handleImageSelect}
+					className={`${
+						selectedImage == "fourth"
+							? "bg-zinc-800   rounded-xl"
+							: ""
+					} p-2 hover:bg-zinc-800 w-fit rounded-xl active:bg-zinc-700 cursor-pointer
+					`}>
 					<TokenIcon color='green' />
 				</div>
-				<div>
+				<div
+					id='fifth'
+					onClick={handleImageSelect}
+					className={`${
+						selectedImage == "fifth"
+							? "bg-zinc-800   rounded-xl"
+							: ""
+					} p-2 hover:bg-zinc-800 w-fit rounded-xl active:bg-zinc-700 cursor-pointer
+					`}>
 					<TokenIcon color='violet' />
 				</div>
-				<div className='flex justify-center items-center w-[3.8rem] h-[3.5rem] bg-zinc-700 cursor-pointer relative rounded-[.6rem]'>
+				{upLoadedImage && (
+					<div
+						id='sixth'
+						onClick={handleImageSelect}
+						className={`${
+							selectedImage == "sixth"
+								? "bg-zinc-800   rounded-xl"
+								: ""
+						} p-2 hover:bg-zinc-800 w-fit rounded-xl active:bg-zinc-700 cursor-pointer relative
+					`}>
+						<Image
+							src={URL.createObjectURL(upLoadedImage)}
+							alt=''
+							width={48}
+							height={55}
+							className='object-cover w-[3rem] h-[3rem]'
+						/>
+						<span
+							onClick={removeUploadedImage}
+							className='cursor-pointer absolute top-0 left-0 bg-[#e4e4e7b3] rounded-full  ring-offset-background transition-opacity hover:opacity-100 focus:outline-none  disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground p-1'>
+							<X className='h-4  w-4 text-zinc-900' />
+							<span className='sr-only'>Close</span>
+						</span>
+					</div>
+				)}
+				<div
+					className={`${
+						hidden && "hidden"
+					}  flex justify-center items-center w-[3.8rem] h-[3.5rem] bg-zinc-700 cursor-pointer relative rounded-[.6rem]`}>
 					<input
 						type='file'
 						accept='image/*'
@@ -70,6 +211,10 @@ const TokenDetailsUI = () => {
 				<p className='text-gray-400 font-medium mb-2'>Description</p>
 				<textarea
 					className='bg-[#1F1F1F] border-none outline-none focus:outline-app-primary focus:border-app-primary text-gray-400 rounded-[.8rem] px-4 py-2 w-full h-[9rem] resize-none'
+					onChange={handleChange}
+					name='description'
+					required
+					value={tokenDetails?.description}
 					placeholder='Tell us something about your token...'
 				/>
 			</div>
@@ -79,6 +224,9 @@ const TokenDetailsUI = () => {
 				<input
 					type='text'
 					className='bg-[#1F1F1F] text-gray-400 px-4 py-2 w-full h-16 rounded-[.8rem] border-none outline-none focus:outline-app-primary focus:border-app-primary'
+					name='website'
+					onChange={handleChange}
+					value={tokenDetails?.website}
 					placeholder='Website'
 				/>
 			</div>
@@ -92,6 +240,9 @@ const TokenDetailsUI = () => {
 				<input
 					id='twitter'
 					type='text'
+					value={tokenDetails?.twitter}
+					onChange={handleChange}
+					name='twitter'
 					className='rounded-[.8rem] bg-[#1F1F1F] text-gray-400 px-4 py-2 w-full h-16 border-none outline-none focus:outline-app-primary focus:border-app-primary'
 					placeholder='X (formerly Twitter)'
 				/>
@@ -106,6 +257,9 @@ const TokenDetailsUI = () => {
 				<input
 					id='telegram'
 					type='text'
+					onChange={handleChange}
+					value={tokenDetails?.telegram}
+					name='telegram'
 					className='rounded-[.8rem] bg-[#1F1F1F] text-gray-400 px-4 py-2 w-full h-16 border-none outline-none focus:outline-app-primary focus:border-app-primary'
 					placeholder='Telegram'
 				/>
@@ -120,6 +274,9 @@ const TokenDetailsUI = () => {
 				<input
 					id='discord'
 					type='text'
+					onChange={handleChange}
+					value={tokenDetails?.discord}
+					name='discord'
 					className='rounded-[.8rem] bg-[#1F1F1F] text-gray-400 px-4 py-2 w-full h-16 border-none outline-none focus:outline-app-primary focus:border-app-primary'
 					placeholder='Discord'
 				/>

@@ -3,10 +3,14 @@
 // import { shortenAddress } from "@/lib/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
-
+import { cn } from "@/lib/utils";
 import UserInfo from "./UserInfo";
 
-export const ConnectWalletButton = () => {
+type ConnectWalletButtonProps = {
+	className?: string;
+};
+
+export const ConnectWalletButton = (props: ConnectWalletButtonProps) => {
 	const { connected, disconnect, connecting } = useWallet();
 	const { setVisible } = useWalletModal();
 
@@ -25,9 +29,9 @@ export const ConnectWalletButton = () => {
 	return (
 		<button
 			onClick={handleClick}
-			className='w-full max-w-[150px] '>
+			className={cn("w-full max-w-[150px]", props.className)}>
 			{connecting && "Connecting"}
-			{!connected && "Connect Wallet"}
+			{!connected && !connecting && "Connect Wallet"}
 		</button>
 	);
 };

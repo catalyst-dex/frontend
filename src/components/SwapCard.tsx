@@ -4,7 +4,11 @@ import { ArrowDown, SlidersHorizontal } from "lucide-react";
 
 import TokenListDialog from "./TokenListDialog";
 import useSwapToken from "@/hooks/useSwapToken";
+import { useEffect } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { Connection, PublicKey } from "@solana/web3.js";
 
+import { getSOLBalance, getTokenBalances } from "@/lib/utils";
 // import {
 // 	Select,
 // 	SelectContent,
@@ -59,8 +63,29 @@ function SwapCard() {
 	const { setTokenToPay, setTokenToReceive, tokenToPay, tokenToRecieve } =
 		useSwapToken();
 
+	const { publicKey } = useWallet();
+
+	const switchTokens = () => {
+		setTokenToPay(tokenToRecieve);
+		setTokenToReceive(tokenToPay);
+	};
+
+	useEffect(() => {
+		const fetchBalances = async () => {
+			if (!publicKey) return;
+			const connection = new Connection(
+				"https://rpc.devnet.soo.network/rpc",
+				"confirmed"
+			);
+			const newPublicKey = new PublicKey(publicKey?.toString());
+			await getSOLBalance(connection, newPublicKey);
+			await getTokenBalances(connection, newPublicKey);
+		};
+		fetchBalances();
+	}, [publicKey]);
+
 	return (
-		<article className='w-[40%] border border-[#5c5c5c7d] rounded-[1rem] mx-auto mt-14 p-6 bg-[#0f0f0ff0] min-w-[32rem]'>
+		<article className='w-[40%] border border-[#b23b4b5c] rounded-[1rem] mx-auto mt-14 p-6 bg-[#0f0f0ff0] min-w-[32rem]'>
 			<div className='flex items-center justify-between text-sm text-gray-400 mb-7'>
 				<p className='font-glyphic font-semibold text-[#cdcdcd] text-lg'>
 					Exchange
@@ -77,7 +102,9 @@ function SwapCard() {
 						title='You pay'
 						setSelectedToken={setTokenToPay}
 					/>
-					<div className='absolute -bottom-5 left-1/2  -translate-x-1/2 translate-y-full  flex items-center justify-center  bg-[#181818] border border-[#5c5c5c7d] w-fit p-4 rounded-[.8rem]'>
+					<div
+						onClick={switchTokens}
+						className='cursor-pointer absolute -bottom-5 left-1/2  -translate-x-1/2 translate-y-full  flex items-center justify-center  bg-[#181818] border border-[#5c5c5c7d] w-fit p-4 rounded-[.8rem]'>
 						<ArrowDown className='text-gray-500' />
 					</div>
 				</div>
